@@ -10,26 +10,10 @@ let selectedHistoryDate = null;
 let editingActivityId = null;
 let editingActivityDate = null;
 
-// Initialize theme
+// Initializion
 initializeTheme();
+initializeTime(); 
 
-// Set today's date as default
-document.getElementById('date').valueAsDate = new Date();
-
-// Set current start time to today's time
-let currTimeH = todayArr[5].split(":")[0]
-let currTimeM = todayArr[5].split(":")[1]
-currTimeH = (todayArr[6] == "AM") ? currTimeH : parseInt(currTimeH) + 12
-
-// IF!!! there alr isnt an existing one
-const date = document.getElementById('date').value;
-const activities = getActivities(date);
-if (activities.length > 0){
-    currTimeH = activities.at(0).endTime.split(":")[0]
-    currTimeM = activities.at(0).endTime.split(":")[1]
-}
-
-document.getElementById('startTime').value = `${currTimeH}:${currTimeM}`;
 
 // Load activities on page load
 loadActivities();
@@ -45,6 +29,27 @@ document.getElementById('editForm').addEventListener('submit', function(e) {
     e.preventDefault();
     saveEditedActivity();
 });
+
+function initializeTime(){
+    // Set today's date as default
+    document.getElementById('date').valueAsDate = new Date();
+
+    // Set current start time to today's time
+    let currTimeH = todayArr[5].split(":")[0]
+    let currTimeM = todayArr[5].split(":")[1]
+    currTimeH = (todayArr[6] == "AM") ? currTimeH : parseInt(currTimeH) + 12
+
+    // IF!!! there alr isnt an existing one
+    const date = document.getElementById('date').value;
+    const activities = getActivities(date);
+    if (activities.length > 0){
+        // gets last time (-1)
+        currTimeH = activities.at(-1).endTime.split(":")[0]
+        currTimeM = activities.at(-1).endTime.split(":")[1]
+    }
+
+    document.getElementById('startTime').value = `${currTimeH}:${currTimeM}`;
+}
 
 // Toast Notification System
 function showToast(message, type = 'info', duration = 3000) {
@@ -159,7 +164,7 @@ function addActivity() {
     document.getElementById('date').valueAsDate = new Date();
 
     showToast('Activity added successfully!', 'success');
-
+    initializeTime(); // re-initialize time to current time
     loadActivities();
     loadHistoryDates();
 }
