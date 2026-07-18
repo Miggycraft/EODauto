@@ -181,16 +181,26 @@
     <script>
         const STORAGE_KEY = 'eodActivities';
         const THEME_KEY = 'eodTheme';
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Intl.DateTimeFormat('en-PH', {
+            timeZone: 'Asia/Manila',
+            dateStyle: 'full',
+            timeStyle: 'long'
+        }).format(new Date());
+        let todayArr = today.split(' ');
         let selectedHistoryDate = null;
         let editingActivityId = null;
         let editingActivityDate = null;
-
+        
         // Initialize theme
         initializeTheme();
-
+        
         // Set today's date as default
         document.getElementById('date').valueAsDate = new Date();
+
+        // Set current start time to today's time
+        let currTimeH = todayArr[5].substring(0, 2).split(":")[0] // trust me vro... 🐰
+        currTimeH = (todayArr[6] == "AM") ? currTimeH : parseInt(currTimeH) + 12
+        document.getElementById('startTime').value = currTimeH + today.split(' ')[5].substring(2, 5);
 
         // Load activities on page load
         loadActivities();
